@@ -1,12 +1,9 @@
 package org.launchcode.spaday.controllers;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
-
-
 @Controller
 public class SpaDayController {
 
@@ -42,11 +39,9 @@ public class SpaDayController {
             return true;
         }
     }
-
-    @GetMapping(value="")
-    @ResponseBody
-    public String customerForm () {
-        String html = "<form method = 'post'>" +
+    @GetMapping
+    public String customerForm ( Model model) {
+        /*String html = "<form method = 'post'>" +
                 "Name: <br>" +
                 "<input type = 'text' name = 'name'>" +
                 "<br>Skin type: <br>" +
@@ -60,28 +55,34 @@ public class SpaDayController {
                 "<select name = 'manipedi'>" +
                 "<option value = 'manicure'>Manicure</option>" +
                 "<option value = 'pedicure'>Pedicure</option>" +
+                "<option value = 'both'>Both</option>" +
                 "</select><br>" +
                 "<input type = 'submit' value = 'Submit'>" +
-                "</form>";
-        return html;
+                "</form>";*/
+        return "form";
     }
 
-    @PostMapping(value="")
-    public String spaMenu(@RequestParam String name, @RequestParam String skintype, @RequestParam String manipedi, Model model) {
 
+    @RequestMapping
+    public String spaMenu(@RequestParam String name, @RequestParam String skintype, @RequestParam String manipedi, Model model) {
+        String cap = skintype.substring(0, 1).toUpperCase() + skintype.substring(1);
         ArrayList<String> facials = new ArrayList<String>();
         facials.add("Microdermabrasion");
         facials.add("Hydrofacial");
         facials.add("Rejuvenating");
         facials.add("Enzyme Peel");
-
         ArrayList<String> appropriateFacials = new ArrayList<String>();
         for (int i = 0; i < facials.size(); i ++) {
             if (checkSkinType(skintype,facials.get(i))) {
                 appropriateFacials.add(facials.get(i));
             }
         }
-
+        model.addAttribute("name" , name);
+        model.addAttribute("skintype", cap);
+        model.addAttribute("facials", facials);
+        model.addAttribute("appropriateFacials", appropriateFacials);
+        model.addAttribute("manipedi", manipedi);
         return "menu";
     }
+
 }
